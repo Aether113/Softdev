@@ -1,0 +1,224 @@
+
+import javax.swing.JFrame;
+import javax.swing.JTable;
+import java.awt.BorderLayout;
+
+
+import javax.swing.JButton;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JTabbedPane;
+import javax.swing.JPanel;
+
+import javax.swing.JEditorPane;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
+import javax.swing.JScrollPane;
+import java.awt.SystemColor;
+import java.awt.Font;
+
+public class GUI {
+
+	private JFrame frame;
+	private JLabel lblNewLabel;
+	private JTabbedPane tabbedPane;
+	private JPanel panel;
+	private JLabel lblText;
+	private JEditorPane textpane;
+	private JLabel lblAnswer;
+	private JEditorPane answerpane;
+	private JLabel lblExplanation;
+	private JEditorPane explanationpane;
+	private JPanel panel_2;
+	private JButton btnNewButton;
+	
+	private QuestionManager qm = QuestionManager.UNIQUEINSTANCE;
+	
+	String[] columns = {"id", "Text","Answer","Explanation", "Image link"};
+	
+	//table
+	private JScrollPane scrollPane;
+	private JTable table;
+	
+	//Cell are not editable
+	@SuppressWarnings("serial")
+	private DefaultTableModel model = new DefaultTableModel(){	@Overide
+	    public boolean isCellEditable(int row, int column) {
+	       //all cells false
+	       return false;
+	    }}; 
+	    
+	private JMenuBar menuBar;
+	private JMenu mnFile;
+	private JMenuItem mntmRefresh;
+	private JEditorPane imageurlpane;
+	private JLabel lblImageUrl;
+	private JMenuItem mntmDeleteAll;
+	
+	
+	public GUI() {
+		initialize();
+		try {
+			frame.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 581, 446);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		
+		lblNewLabel = new JLabel("Quiz Database V1");
+		lblNewLabel.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		frame.getContentPane().add(lblNewLabel, BorderLayout.SOUTH);
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+		
+		scrollPane = new JScrollPane();
+		tabbedPane.addTab("Database", null, scrollPane, null);
+		
+		table = new JTable(model);
+		
+		model.setColumnIdentifiers(columns);
+		
+		table.setFillsViewportHeight(true);
+		table.setColumnSelectionAllowed(true);
+		scrollPane.setViewportView(table);
+		
+		panel = new JPanel();
+		tabbedPane.addTab("Add new", null, panel, null);
+		panel.setLayout(new FormLayout(new ColumnSpec[] {
+				ColumnSpec.decode("74px"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("400px:grow"),},
+			new RowSpec[] {
+				RowSpec.decode("88px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("59px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("59px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),}));
+		
+		lblText = new JLabel("Text");
+		lblText.setHorizontalAlignment(SwingConstants.CENTER);
+		lblText.setFont(new Font("Code Light", Font.PLAIN, 12));
+		panel.add(lblText, "1, 1, center, center");
+		
+		textpane = new JEditorPane();
+		panel.add(textpane, "3, 1, fill, fill");
+		
+		lblAnswer = new JLabel("Answer");
+		lblAnswer.setFont(new Font("Code Light", Font.PLAIN, 12));
+		lblAnswer.setHorizontalAlignment(SwingConstants.LEFT);
+		panel.add(lblAnswer, "1, 3, center, center");
+		
+		answerpane = new JEditorPane();
+		panel.add(answerpane, "3, 3, fill, fill");
+		
+		lblExplanation = new JLabel("Explanation");
+		lblExplanation.setHorizontalAlignment(SwingConstants.CENTER);
+		lblExplanation.setFont(new Font("Code Light", Font.PLAIN, 12));
+		panel.add(lblExplanation, "1, 5, center, center");
+		
+		explanationpane = new JEditorPane();
+		panel.add(explanationpane, "3, 5, fill, fill");
+		
+		lblImageUrl = new JLabel("Image URL");
+		lblImageUrl.setHorizontalAlignment(SwingConstants.CENTER);
+		lblImageUrl.setFont(new Font("Code Light", Font.PLAIN, 12));
+		panel.add(lblImageUrl, "1, 7, center, default");
+		
+		imageurlpane = new JEditorPane();
+		panel.add(imageurlpane, "3, 7, fill, fill");
+		
+		panel_2 = new JPanel();
+		panel.add(panel_2, "3, 9, left, fill");
+		
+		btnNewButton = new JButton("Add question to database");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+				qm.insertQuestion(textpane.getText(), answerpane.getText(), explanationpane.getText(), imageurlpane.getText());
+				}
+				catch(Exception ex){
+					ex.printStackTrace();
+				}
+				finally{
+					
+				}
+			}
+		});
+		btnNewButton.setHorizontalAlignment(SwingConstants.LEFT);
+		panel_2.add(btnNewButton);
+		
+		menuBar = new JMenuBar();
+		menuBar.setBackground(SystemColor.window);
+		frame.setJMenuBar(menuBar);
+		
+		mnFile = new JMenu("File");
+		mnFile.setBackground(SystemColor.window);
+		menuBar.add(mnFile);
+		
+		mntmRefresh = new JMenuItem("Refresh");
+		mntmRefresh.setBackground(SystemColor.window);
+		mntmRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int rowCount = model.getRowCount();
+				//Remove rows one by one from the end of the table
+				for (int i = rowCount - 1; i >= 0; i--) {
+				    model.removeRow(i);
+				}
+				updateTable();
+			}
+		});
+		mnFile.add(mntmRefresh);
+		
+		mntmDeleteAll = new JMenuItem("Delete All");
+		mntmDeleteAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		mnFile.add(mntmDeleteAll);
+	}
+	
+	public void updateTable(){
+		
+		Question question;
+		//table.setModel(model);
+		
+		for(int i = 0; i < qm.getAmountOfRows(); i++){
+			question = qm.getQuestionByID(i+1);
+			System.out.println(qm.getAmountOfRows());
+			int id = question.getId();
+			String text = question.getText();
+			String answer =  question.getAnswer();
+			String explanation = question.getExplanation();
+			String image_link = question.getImage_path();
+			
+			String[] row = {Integer.toString(id),text, answer, explanation, image_link};
+			model.addRow(row);
+			
+		}
+	}
+}

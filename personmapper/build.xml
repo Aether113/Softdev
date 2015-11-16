@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="run" name="JDBCDemo">
+	<!-- set global properties for this build -->
+	<property name="src.dir" location="src" />
+	<property name="build.dir" location="bin" />
+	<property name="lib.dir" location="lib" />
+	<property name="dist.dir" location="dist" />
+	<property name="doc.dir" location="doc" />
+	
+	<property name="main-class"  value="domain.MainProgram"/>
+	
+	<path id="class.path">
+	  <!-- include all jars in the lib directory and all sub-directories -->
+	  <fileset dir="${lib.dir}">
+	    <include name="**/*.jar" />
+	  </fileset>
+	</path>
+
+	<target name="init">
+		<!-- Make a custom timestamp variable -->
+		<tstamp>
+			<format property="my.stamp" pattern="yyMMdd" />
+		</tstamp>
+	</target>
+	
+	<target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+	<target depends="init" name="javadoc">
+		<delete dir="${doc.dir}" quiet="true" />
+		<mkdir dir="${doc.dir}" />
+		<javadoc destdir="${doc.dir}" version="true" use="true">
+			<fileset dir="${src.dir}">
+				<exclude name="**/**Tester.java" />
+			</fileset>
+			<link href="http://docs.oracle.com/javase/8/docs/api/" />
+		</javadoc>
+	</target>
+
+	<target depends="init,clean" name="build">
+		<mkdir dir="${build.dir}" />
+		<javac destdir="${build.dir}">
+			<src path="${src.dir}" />
+			<exclude name="**/**Tester.java" />
+			<classpath>
+				<fileset dir="${lib.dir}" includes="**/*.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="dist" depends="build,javadoc" description="generate the distribution">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist.dir}" />
+		<!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+		<jar jarfile="${dist.dir}/${ant.project.name}-${my.stamp}.jar" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+				<attribute name="Class-Path" value="${class.path}" />
+			</manifest>
+			<zipfileset dir="${lib.dir}" prefix="lib" />
+			<zipfileset dir="${src.dir}" prefix="src" />
+			<zipfileset dir="${doc.dir}" prefix="doc" />
+			<fileset file="database.properties" />
+			<fileset file="database.sql" />
+			<fileset file="build.xml" />
+		</jar>
+	</target>
+	
+    <target name="run" depends="dist">
+        <java classname="${main-class}" fork="true">
+        	<classpath>
+        		<fileset dir="${lib.dir}" includes="**/*.jar" />
+        		<path location="${dist.dir}/${ant.project.name}-${my.stamp}.jar"/>
+        	</classpath>
+        </java>
+    </target>
+
+</project>

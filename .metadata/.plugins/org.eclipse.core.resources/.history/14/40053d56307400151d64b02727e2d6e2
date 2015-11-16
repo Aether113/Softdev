@@ -1,0 +1,74 @@
+package softdev_1;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
+import javax.swing.*;
+
+public class main{
+	
+    static JFrame frame = new JFrame("WordPuzzle");
+	
+	static WordPuzzle myPuzzle = new WordPuzzle("VNYBKGSRORANGEETRNXWPLAEALKAPMHNWMRPOCAXBGATNOMEL", 7);
+	String wordToSearch;
+	
+	
+	public void searchWord(){
+		
+	}
+	
+	public void keyPressed(KeyEvent e) {
+	    if (e.getKeyCode() == KeyEvent.VK_TAB){
+	        System.out.println("Hello");
+
+	        JOptionPane.showMessageDialog(null , "You've Submitted the name");
+	    }
+	}
+
+
+	public static void main(String[] args) {
+		
+		JPanel main = new JPanel();
+	    JPanel grid = new JPanel();
+	    JPanel wordPane = new JPanel();
+	    
+	    main.setLayout(new BoxLayout(main, BoxLayout.Y_AXIS));
+	    
+	    JTextField wordEntry = new JTextField(20);
+	    wordEntry.setFocusable(true);
+	    
+	    wordEntry.setAlignmentX(Component.RIGHT_ALIGNMENT);
+	    
+	    JLabel wordLabel = new JLabel("Search word:    ");
+	    wordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+	    
+	    wordPane.add(wordLabel);
+	    wordPane.add(wordEntry);
+	    wordPane.setBackground(Color.LIGHT_GRAY);
+	    wordPane.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+
+	    grid.setLayout(new GridLayout(myPuzzle.getNumberOfColumns(), myPuzzle.getNumberOfRows()));
+	    grid.setPreferredSize(new Dimension(400, 400));
+	    
+	    
+	    
+	    for (int i = 0; i < myPuzzle.getNumberOfRows(); i++) {
+	        for (int j = 0; j < myPuzzle.getNumberOfColumns(); j++) {
+	        	JLabel letter = new JLabel(Character.toString(myPuzzle.getLetterAt(i, j)));
+	        	letter.setHorizontalAlignment(JLabel.CENTER);
+	        	
+	        	grid.add(letter);
+	        }
+	    }
+	    
+	    main.add(grid);
+	    main.add(wordPane);
+		  
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    frame.add(main);
+	    frame.pack();
+	    frame.setVisible(true);
+ 
+	}
+}
+

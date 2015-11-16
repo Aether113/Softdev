@@ -1,0 +1,22 @@
+import java.util.concurrent.ScheduledExecutorService;
+
+public class Main {
+	
+	
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		GUI gui = new GUI();
+		
+		Runnable helloRunnable = new Runnable() {
+		    public void run() {
+		        gui.updateTable();
+		        System.out.println("updated");
+		    }
+		};
+		
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+		executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
+		
+	}
+}

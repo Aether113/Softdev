@@ -1,0 +1,16 @@
+public class QuizManager {
+
+	private int sqlcon;
+	private int password;
+
+	public void addQuestionToDatabase() {
+		// TODO - implement QuizManager.addQuestionToDatabase
+		throw new UnsupportedOperationException();
+	}
+
+	public void DeletQuestionFromDatabase() {
+		// TODO - implement QuizManager.DeletQuestionFromDatabase
+		throw new UnsupportedOperationException();
+	}
+
+}

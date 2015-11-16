@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;GUI.fillTable()&apos; to &apos;updateTable&apos;&#x0A;- Original project: &apos;SimpleQuiz&apos;&#x0A;- Original element: &apos;GUI.fillTable()&apos;&#x0A;- Renamed element: &apos;GUI.updateTable()&apos;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;fillTable&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/&lt;{GUI.java[GUI~fillTable" name="updateTable" references="true" stamp="1447600858090" version="1.0"/>
+</session>

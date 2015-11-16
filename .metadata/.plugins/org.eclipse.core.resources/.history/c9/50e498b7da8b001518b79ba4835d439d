@@ -1,0 +1,104 @@
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Date;
+import java.util.LinkedList;
+import java.util.List;
+
+public enum QuestionManager{
+	
+	UNIQUEINSTANCE;
+
+	private QuestionManager(){
+		//constructor
+	}
+	
+	public Question getQuestionByID(int id){
+		String select = "SELECT ID, Text, Explanation, Answer, Image FROM Question where ID = ?";
+		Question question = null;
+		try {
+			PreparedStatement prepstat = Database.UNIQUEINSTANCE.getConnection().prepareStatement(select);
+			prepstat.setInt(1, id);
+			question = sqlToQuestion(prepstat);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return question;
+	}
+	
+	public void insertQuestion(String text, String answer, String explanation, String imageurl){
+		String insert = "INSERT INTO Question (ID, Text, Explanation, Answer, Image) VALUES ("+ text + "," + answer +"," + "," + explanation + "," + imageurl+ ";)";
+		try {
+			PreparedStatement prepstat = Database.UNIQUEINSTANCE.getConnection().prepareStatement(insert);
+	        prepstat.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private Question sqlToQuestion(PreparedStatement prepstat) {
+		Question question = null;
+		ResultSet rs = null;
+		try {
+			rs = prepstat.executeQuery();
+			if (rs.next()) {
+				int id = rs.getInt("ID");
+				String text = rs.getString("Text");
+				String answer = rs.getString("Answer");
+				String explanation = rs.getString("Explanation");
+				String image_link = rs.getString("Image");
+				question = new Question(id, text, answer, explanation, image_link);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				prepstat.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return question;
+	}
+	
+	public int getAmountOfRows(){
+		String select = "SELECT COUNT(ID) FROM Question;";
+		ResultSet rs = null;
+		PreparedStatement prepstat = null;
+		int rows = 0;
+		
+		try {
+			 prepstat = Database.UNIQUEINSTANCE.getConnection().prepareStatement(select);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			rs = prepstat.executeQuery();
+			rs.last();
+			rows = rs.getRow()+1;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				prepstat.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return rows;	
+	}
+}

@@ -1,0 +1,30 @@
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Date;
+import java.util.LinkedList;
+import java.util.List;
+
+
+
+public enum QuestionManager{
+	
+	UNIQUEINSTANCE;
+
+	private QuestionManager(){
+		//constructor
+	}
+	
+	public Question getQuestionByID(int id){
+		String select = "SELECT ID, Text, Explanation, Answer FROM Question where ID = ?";
+		Question person = null;	
+		try {
+			PreparedStatement prepstat = Database.UNIQUEINSTANCE.getConnection().prepareStatement(select);
+			prepstat.setInt(1, id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return person;
+	}
+}
